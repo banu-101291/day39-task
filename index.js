@@ -4,28 +4,32 @@ const path = require('path');
 const bodyParser = require('body-parser');
 
 const app=express();
-const PORT = 3000;
+const PORT = 5000;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.post('/createTimeStampFile', (req,res) =>{
-    const currenttimestamp = new Date( ).toISOString();
-    const content=currenttimestamp ;
+app.post('/create', (req,res) =>{
+console.log("hiiii");
+    try {
+          
+    let date = new Date() ;
+    let currentTimeStamp = date.toUTCString().slice(0, -7);
+    let splited = currentTimeStamp.split(" ");
+    console.log(`spilt output:${splited}`)
+    let content = `The current Time with date: ${currentTimeStamp}`
+    console.log(content);
 
-    const filePath = 'path/to/file.json';
 
-fs.writeFile(filePath,content, (err) => {
-        if (err) {
-            console.error(`Error saving file`, err);
-            res.status(500).json({ error: `Failed to save file.` });
-        }
+    fs.writeFileSync(path.join(__dirname, `/TimeStampFile/dateTime${splited.join()}.txt`), content)
 
-        else {
-            console.log(`File saved successfully`, filePath);
-            res.status(201).json({ message: content });
-        }
-    });
 
+    res.status(200).json({ status: 'success', message: "file created successfully" })
+
+        
+    } catch (error) {
+        console.log(error);
+        
+    }
 
 });
 
